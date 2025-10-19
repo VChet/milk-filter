@@ -23,3 +23,38 @@ label {
   justify-content: start;
   gap: 0.5rem;
 }
+.gh-ribbon {
+  font-family: Helvetica, Arial, sans-serif;
+  width: 600px;
+  text-align: center;
+  font-weight: bold;
+  font-size: 0.8rem;
+  padding: 6px;
+  text-decoration: none;
+  position: fixed;
+  box-shadow: 0 3px 6px #00000029, 0 3px 6px #0000003b;
+  z-index: 1000;
+  top: 15px;
+  right: -285px;
+  transform: rotate(45deg) translateY(100%);
+  background-color: #cb2b2b;
+  color: #fff;
+  &::after {
+    content: "";
+    position: relative;
+    display: block;
+    top: 4px;
+    left: 0;
+    width: 600px;
+    border: 1px dashed #ffffff66;
+  }
+  &::before {
+    content: "";
+    position: relative;
+    display: block;
+    bottom: 4px;
+    left: 0;
+    width: 600px;
+    border: 1px dashed #ffffff66;
+  }
+}
