@@ -1,14 +1,19 @@
 <script lang="ts">
+  import { FilterType } from "@/constants";
+  import type { FilterPayload } from "@/filter.worker";
+
   let originalCanvas: HTMLCanvasElement;
   let filteredCanvas: HTMLCanvasElement;
 
   let image: HTMLImageElement | null = $state(null);
-  let filterType: number = $state(1);
+  let filterType: FilterType = $state(FilterType.INSIDE);
   let pointillism = $state(false);
 
+  let worker: Worker | null = $state(null);
   let isLoading: boolean = $state(false);
   let isProcessing: boolean = $state(false);
-  let isProcessingFinished: boolean = $state(false);
+  let processProgress: number = $state(0);
+  const isProcessingFinished: boolean = $derived(processProgress === 100);
 
   function drawOnCanvas(canvas: HTMLCanvasElement, img: HTMLImageElement): void {
     const ctx = canvas.getContext("2d", { willReadFrequently: true });
@@ -51,51 +56,30 @@
   function applyFilter(): void {
     if (!image) return;
 
-    isProcessingFinished = false;
     isProcessing = true;
 
     const ctx = filteredCanvas.getContext("2d", { willReadFrequently: true });
     if (!ctx) return;
 
     ctx.drawImage(image, 0, 0, filteredCanvas.width, filteredCanvas.height);
+    const imageData = ctx.getImageData(0, 0, filteredCanvas.width, filteredCanvas.height);
 
-    const { width, height } = filteredCanvas;
-    const imageData = ctx.getImageData(0, 0, width, height);
-    const { data } = imageData;
+    if (worker) worker.terminate();
+    worker = new Worker(new URL("../filter.worker.ts", import.meta.url), { type: "module" });
 
-    const punt = pointillism ? 0.7 : 1.0;
-    const probably = (chance: number) => Math.random() < chance;
-
-    const [palette1, palette2, palette3] = filterType === 1 ? [[0, 0, 0], [102, 0, 31], [137, 0, 146]] : [[0, 0, 0], [92, 36, 60], [203, 43, 43]];
-    const [thresh1, thresh2] = filterType === 1 ? [120, 200] : [90, 150];
-
-    let y = 0;
-
-    function processRow(): void {
-      if (y >= height) {
-        ctx?.putImageData(imageData, 0, 0);
+    worker.onmessage = (event: MessageEvent) => {
+      const { imageData: newData, progress = 0 } = event.data;
+      processProgress = progress;
+      if (newData) {
+        ctx.putImageData(newData, 0, 0);
         isProcessing = false;
-        isProcessingFinished = true;
-        return;
+        worker?.terminate();
+        worker = null;
       }
+    };
 
-      for (let x = 0; x < width; x++) {
-        const i = (y * width + x) * 4;
-        const brightness = (data[i] + data[i + 1] + data[i + 2]) / 3;
-        let newColor = palette1;
-        if (brightness <= 25) newColor = palette1;
-        else if (brightness <= 70) newColor = probably(punt) ? palette1 : palette2;
-        else if (brightness < thresh1) newColor = probably(punt) ? palette2 : palette1;
-        else if (brightness < thresh2) newColor = palette2;
-        else if (brightness < 230) newColor = probably(punt) ? palette3 : palette2;
-        else newColor = palette3;
-        [data[i], data[i + 1], data[i + 2]] = newColor;
-      }
-      ctx?.putImageData(imageData, 0, 0);
-      y++;
-      requestAnimationFrame(processRow);
-    }
-    processRow();
+    const payload: FilterPayload = { imageData, pointillism, filterType };
+    worker.postMessage(payload);
   }
 
   function saveImage(): void {
@@ -109,19 +93,19 @@
 
 <input type="file" accept="image/*" onchange={loadImage}>
 
-<div class="canvas-container" hidden={isLoading || !image}>
+<div class="canvas-container" class:hide={isLoading || !image}>
   <canvas bind:this={originalCanvas}></canvas>
   <canvas bind:this={filteredCanvas}></canvas>
 </div>
 
-<div class="controls" hidden={!image}>
+<div class="controls" class:hide={!image}>
   <div>
     <label>
-      <input type="radio" name="filter" bind:group={filterType} value={1} checked>
+      <input type="radio" name="filter" bind:group={filterType} value={FilterType.INSIDE} checked>
       Milk Inside a Bag of Milk
     </label>
     <label>
-      <input type="radio" name="filter" bind:group={filterType} value={2}>
+      <input type="radio" name="filter" bind:group={filterType} value={FilterType.OUTSIDE}>
       Milk Outside a Bag of Milk
     </label>
   </div>
@@ -132,7 +116,10 @@
     </label>
   </div>
   <div class="buttons">
-    <button disabled={isProcessing} onclick={applyFilter}>Apply Filter</button>
+    <button disabled={isProcessing} onclick={applyFilter}>
+      Apply Filter
+      <span class:hide={!isProcessing && !isProcessingFinished}>{Math.floor(processProgress)} %</span>
+    </button>
     <button disabled={isProcessing || !isProcessingFinished} onclick={saveImage}>Save Image</button>
   </div>
 </div>

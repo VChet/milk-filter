@@ -16,7 +16,6 @@
     "importHelpers": true,
     "allowSyntheticDefaultImports": true,
     "isolatedModules": true,
-    "erasableSyntaxOnly": true,
     "skipLibCheck": true
   },
   "include": ["src/**/*.ts", "src/**/*.svelte"]
