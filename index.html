@@ -2,37 +2,18 @@
 <html lang="en">
   <head>
     <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
 
     <title>Milk Filter</title>
 
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="O24x7 Downloader" />
+    <meta property="og:url" content="https://milk-filter.netlify.app" />
+    <meta property="og:locale" content="en_US" />
+
     <link rel="icon" href="./favicon.ico" sizes="32x32" />
-    <link rel="stylesheet" href="style.css">
   </head>
   <body>
-    <input type="file" id="fileInput" accept="image/*">
-
-    <div id="canvasContainer" hidden>
-      <canvas id="originalCanvas"></canvas>
-      <canvas id="filteredCanvas"></canvas>
-    </div>
-
-    <div class="controls" hidden>
-      <div>
-        <label><input type="radio" name="filter" value="1" checked> Milk Inside a Bag of Milk</label>
-        <label><input type="radio" name="filter" value="2"> Milk Outside a Bag of Milk</label>
-      </div>
-      <div>
-        <label><input type="checkbox" id="pointillism"> Pointillism effect</label>
-      </div>
-      <div class="buttons">
-        <button id="applyFilter">Apply Filter</button>
-        <button id="saveImage" disabled>Save Image</button>
-      </div>
-    </div>
-
-    <a class="gh-ribbon" href="https://github.com/VChet/milk-filter" target="_blank">View on GitHub</a>
-
-    <script src="script.js" type="module"></script>
+    <script type="module" src="/src/main.ts"></script>
   </body>
 </html>

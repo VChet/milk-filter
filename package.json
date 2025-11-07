@@ -1,0 +1,40 @@
+{
+  "name": "milk-filter",
+  "type": "module",
+  "version": "0.1.0",
+  "author": "VChet",
+  "license": "MIT",
+  "scripts": {
+    "preinstall": "npx only-allow pnpm",
+    "build": "vite build",
+    "dev": "vite",
+    "start": "vite preview",
+    "check": "svelte-check --tsconfig ./tsconfig.json",
+    "lint:js": "eslint .",
+    "lint:js:fix": "npm run lint:js -- --fix",
+    "lint:css": "stylelint **/*{.css,.svelte}",
+    "lint:css:fix": "npm run lint:css -- --fix",
+    "lint:all": "npm run check && npm run lint:js && npm run lint:css"
+  },
+  "dependencies": {
+    "@sveltejs/vite-plugin-svelte": "^6.2.1",
+    "vite": "^7.2.2"
+  },
+  "devDependencies": {
+    "@antfu/eslint-config": "^6.2.0",
+    "@stylistic/stylelint-plugin": "^4.0.0",
+    "@tsconfig/svelte": "^5.0.5",
+    "@types/node": "^24.10.0",
+    "eslint": "^9.39.1",
+    "eslint-plugin-svelte": "^3.13.0",
+    "postcss-html": "^1.8.0",
+    "stylelint": "^16.25.0",
+    "stylelint-config-recess-order": "^7.4.0",
+    "stylelint-declaration-block-no-ignored-properties": "^2.8.0",
+    "stylelint-order": "^7.0.0",
+    "svelte": "^5.43.4",
+    "svelte-check": "^4.3.3",
+    "tslib": "^2.8.1",
+    "typescript": "^5.9.3"
+  }
+}

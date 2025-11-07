@@ -7,7 +7,7 @@ Runs entirely in the browser — no installation or Python required.
 
 [Original project by LucaSinUnaS](https://github.com/LucaSinUnaS/Milk-Filter)
 
-![Logo](./favicon.ico)
+![Logo](./public/favicon.ico)
 
 ## License
 
