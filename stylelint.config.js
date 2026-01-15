@@ -4,8 +4,7 @@ export default {
   ],
   plugins: [
     "@stylistic/stylelint-plugin",
-    "stylelint-order",
-    "stylelint-declaration-block-no-ignored-properties"
+    "stylelint-order"
   ],
   overrides: [{ files: ["**/*.svelte"], customSyntax: "postcss-html" }],
   ignoreFiles: ["dist/**/*css"],

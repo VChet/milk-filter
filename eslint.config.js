@@ -1,10 +1,19 @@
 import process from "node:process";
 import antfu from "@antfu/eslint-config";
 
-const SORT_IMPORT_CUSTOM_GROUP = {
-  "svelte": "^svelte$",
-  "svelte-components": "\\.svelte$"
-};
+const SORT_IMPORT_CUSTOM_GROUPS = [{
+  groupName: "svelte",
+  anyOf: [
+    { selector: "type", elementNamePattern: "^svelte$" },
+    { elementNamePattern: "^svelte$" }
+  ]
+}, {
+  groupName: "svelte-components",
+  anyOf: [
+    { selector: "type", elementNamePattern: "\\.svelte$" },
+    { elementNamePattern: "\\.svelte$" }
+  ]
+}];
 
 export default antfu({
   toml: false,
@@ -14,6 +23,7 @@ export default antfu({
     "antfu/consistent-list-newline": "off",
     "antfu/if-newline": "off",
     "curly": ["error", "multi-line"],
+    "import/consistent-type-specifier-style": "off",
     "max-lines": ["warn", { max: 1000 }],
     "max-params": ["error", { max: 6 }],
     "no-await-in-loop": "error",
@@ -35,29 +45,27 @@ export default antfu({
     "perfectionist/sort-named-imports": ["error", {
       order: "asc",
       type: "natural",
-      groupKind: "values-first"
+      groups: ["value-import", "type-import"]
     }],
     "perfectionist/sort-imports": ["error", {
       internalPattern: ["^@/"],
       groups: [
-        "builtin",
+        "value-builtin",
         "svelte",
-        "external",
-        "type",
-        "internal",
-        ["parent", "sibling", "index"],
-        "internal-type",
-        ["parent-type", "sibling-type", "index-type"],
+        "value-external",
+        "type-import",
+        "value-internal",
+        ["value-parent", "value-sibling", "value-index"],
+        "type-internal",
+        ["type-parent", "type-sibling", "type-index"],
         "side-effect",
         "svelte-components",
-        "object",
+        "ts-equals-import",
         "unknown"
       ],
-      customGroups: {
-        value: SORT_IMPORT_CUSTOM_GROUP,
-        type: SORT_IMPORT_CUSTOM_GROUP
-      },
-      newlinesBetween: "ignore",
+      customGroups: SORT_IMPORT_CUSTOM_GROUPS,
+      newlinesBetween: 0,
+      newlinesInside: 0,
       order: "asc",
       type: "natural"
     }],
