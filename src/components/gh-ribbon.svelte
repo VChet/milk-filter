@@ -23,7 +23,7 @@
     display: block;
     width: 600px;
     content: "";
-    border: 1px dashed #ffffff66;
+    border: 1px dashed #fff6;
   }
   &::before {
     position: relative;
@@ -32,7 +32,7 @@
     display: block;
     width: 600px;
     content: "";
-    border: 1px dashed #ffffff66;
+    border: 1px dashed #fff6;
   }
 }
 </style>
